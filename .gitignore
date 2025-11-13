@@ -39,6 +39,13 @@ next-env.d.ts
 # biome
 .biome-cache/
 
+# testing
+coverage/
+*.lcov
+
+# dependency graphs
+graph.svg
+
 # IDE
 .vscode/
 .idea/

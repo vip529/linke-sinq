@@ -1,0 +1,12 @@
+{
+  "fileExtensions": ["ts", "tsx"],
+  "excludeRegExp": ["node_modules", ".next", "out", "build", "dist"],
+  "detectiveOptions": {
+    "ts": {
+      "skipTypeImports": true
+    },
+    "tsx": {
+      "skipTypeImports": true
+    }
+  }
+}

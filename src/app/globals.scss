@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Design tokens
+$ls-bg: #0f111a;
+$ls-card: #1a1d2b;
+$ls-text: #e6e8f0;
+$ls-text-muted: #a9b0c4;
+$ls-accent: #5e5bff;
+$ls-accent-hover: #4e4bef;
+$ls-border: #2a2d3b;
+$ls-success: #10b981;
+$ls-warning: #f59e0b;
+$ls-error: #ef4444;
+
+@layer base {
+  :root {
+    --ls-bg: #{$ls-bg};
+    --ls-card: #{$ls-card};
+    --ls-text: #{$ls-text};
+    --ls-text-muted: #{$ls-text-muted};
+    --ls-accent: #{$ls-accent};
+    --ls-accent-hover: #{$ls-accent-hover};
+    --ls-border: #{$ls-border};
+    --ls-success: #{$ls-success};
+    --ls-warning: #{$ls-warning};
+    --ls-error: #{$ls-error};
+  }
+
+  * {
+    border-color: var(--ls-border);
+  }
+
+  body {
+    background-color: var(--ls-bg);
+    color: var(--ls-text);
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -25,10 +25,11 @@ LinkeSinq is a Learning Intelligence System that transforms scattered internet r
 
 ## Core Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript (strict mode)
-- **Styling:** TailwindCSS
+- **Styling:** TailwindCSS v4 + Sass
 - **UI Components:** Base UI + custom LS components
+- **Testing:** Vitest + Testing Library
 - **Linting/Formatting:** Biome (replaces ESLint + Prettier)
 - **Package Manager:** pnpm
 - **Database:** Supabase (Auth + Postgres + Edge Functions) / Neon
@@ -54,11 +55,23 @@ pnpm build
 pnpm start
 
 # Lint and format (Biome)
-pnpm biome check .
-pnpm biome check --write .
+pnpm lint
+pnpm lint:fix
+pnpm format
 
 # Type checking
 pnpm type-check
+
+# Testing
+pnpm test              # Watch mode
+pnpm test:run          # Run once
+pnpm test:ui           # UI mode
+pnpm test:ui:open      # Open UI in browser
+pnpm test:coverage     # With coverage
+
+# Code quality
+pnpm circular          # Check for circular dependencies
+pnpm check             # Run all checks (lint, type-check, test, circular)
 ```
 
 ## Architecture Principles
@@ -71,14 +84,30 @@ The project follows a feature-based architecture rather than technical grouping:
 src/
   components/
     ls/              # LinkeSinq component library (reusable primitives)
-  app/               # Next.js 15 App Router pages
+  app/               # Next.js 16 App Router pages
   lib/
     ai/              # AI layer (summaries, insights, embeddings)
-    utils/           # Utility functions
-    types/           # TypeScript type definitions
-  styles/
-    globals.css      # Global styles with design tokens
-  config/            # Configuration files
+  utils/             # Utility functions
+  @types/            # TypeScript type definitions
+  hooks/             # Custom React hooks
+  constants/         # App constants
+  configs/           # Configuration files
+  modules/           # Feature modules
+```
+
+### Import Path Alias
+
+Use the `~` alias for all imports from the `src` directory:
+
+```typescript
+// Good
+import { LSButton } from '~/components/ls/LSButton';
+import { cn } from '~/utils/cn';
+import type { User } from '~/@types/user';
+
+// Avoid
+import { LSButton } from '../../../components/ls/LSButton';
+import { cn } from '../../utils/cn';
 ```
 
 ### LS Component System
@@ -250,6 +279,9 @@ Minimize global state. Use:
 - Reusable components in LS library
 - Security-first (no XSS, SQL injection, command injection)
 - Performance-first (optimistic UI, prefetching, skeleton states)
+- Write tests for all new features and bug fixes
+- No circular dependencies (check with `pnpm circular`)
+- Maintain high test coverage on critical paths
 
 ## Best Practices by Technology
 
@@ -345,6 +377,47 @@ const InteractiveButton = ({ onClick }: { onClick: () => void }) => {
 <div className="flex items-center justify-between p-[23px] bg-[#1A1D2B] rounded-[12px]">
 ```
 
+### Sass
+
+**When to Use Sass:**
+- Use Sass for global styles in `globals.scss`
+- Use Sass variables for design tokens that need to be shared
+- Use nesting sparingly for better readability
+- Prefer Tailwind utilities over custom Sass when possible
+
+**Sass Features to Use:**
+- Variables (`$variable-name`) for design tokens
+- Nesting for related selectors (but keep it shallow, max 2-3 levels)
+- Interpolation (`#{$variable}`) when mixing Sass variables with CSS custom properties
+- Mixins for reusable style patterns (if needed)
+
+**Global Styles Location:**
+- `src/app/globals.scss` - Global styles and design tokens
+
+**Example:**
+```scss
+// Design tokens
+$ls-bg: #0f111a;
+$ls-accent: #5e5bff;
+
+@layer base {
+  :root {
+    --ls-bg: #{$ls-bg};
+    --ls-accent: #{$ls-accent};
+  }
+
+  body {
+    background-color: var(--ls-bg);
+  }
+}
+```
+
+**What to Avoid:**
+- Don't create component-specific Sass files (use Tailwind instead)
+- Avoid deep nesting (max 2-3 levels)
+- Don't use `@apply` in Sass - use Tailwind utilities directly in JSX
+- Avoid complex Sass logic - keep it simple and maintainable
+
 ### Naming Conventions
 
 **Files and Folders:**
@@ -353,6 +426,7 @@ const InteractiveButton = ({ onClick }: { onClick: () => void }) => {
 - Folders: `kebab-case` (e.g., `user-profile/`, `knowledge-capsules/`)
 - Route folders (App Router): `kebab-case` (e.g., `app/curated-picks/`)
 - Configuration files: `kebab-case.ts` (e.g., `database-config.ts`)
+- Styles: `globals.scss` for global styles (Sass), component styles use Tailwind
 
 **Variables and Functions:**
 - Variables: `camelCase` (e.g., `userName`, `isLoading`)
@@ -470,6 +544,92 @@ try {
 - Minimize bundle size (analyze with `next build --analyze`)
 - Use React.lazy() for heavy components
 - Implement proper caching strategies (SWR, React Query, or native fetch cache)
+
+### Testing
+
+**Testing Framework:**
+- Use Vitest for unit and integration tests
+- Use @testing-library/react for component testing
+- Place tests in `__tests__` folders next to the code they test
+- Use `.test.ts` or `.test.tsx` extensions
+
+**Testing Best Practices:**
+- Write tests for all new features and bug fixes
+- Test behavior, not implementation details
+- Keep tests simple, focused, and readable
+- Use descriptive test names that explain what is being tested
+- Follow the Arrange-Act-Assert (AAA) pattern
+- Mock external dependencies (API calls, databases, etc.)
+- Aim for high coverage on critical paths (>70%)
+- Run tests before committing: `pnpm test:run`
+
+**Example Test:**
+```typescript
+import { describe, expect, it } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { LSButton } from '~/components/ls/LSButton';
+
+describe('LSButton', () => {
+  it('should render with correct text', () => {
+    render(<LSButton>Click me</LSButton>);
+    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+  });
+
+  it('should call onClick when clicked', async () => {
+    const handleClick = vi.fn();
+    render(<LSButton onClick={handleClick}>Click me</LSButton>);
+    await userEvent.click(screen.getByRole('button'));
+    expect(handleClick).toHaveBeenCalledOnce();
+  });
+});
+```
+
+**Test Commands:**
+```bash
+pnpm test          # Watch mode
+pnpm test:run      # Run once
+pnpm test:ui       # UI mode
+pnpm test:coverage # With coverage report
+```
+
+### Circular Dependencies
+
+**Prevention:**
+- Check for circular dependencies regularly: `pnpm circular`
+- Avoid importing from parent directories
+- Use dependency injection for shared dependencies
+- Extract shared code to separate modules
+- Keep import chains linear and predictable
+
+**Example of Circular Dependency (Avoid):**
+```typescript
+// Bad - Circular dependency
+// fileA.ts imports fileB.ts
+// fileB.ts imports fileA.ts
+
+// fileA.ts
+import { funcB } from './fileB';
+export const funcA = () => funcB();
+
+// fileB.ts
+import { funcA } from './fileA';
+export const funcB = () => funcA();
+```
+
+**Fix:**
+```typescript
+// Good - Extract shared logic
+// shared.ts
+export const sharedLogic = () => { /* ... */ };
+
+// fileA.ts
+import { sharedLogic } from './shared';
+export const funcA = () => sharedLogic();
+
+// fileB.ts
+import { sharedLogic } from './shared';
+export const funcB = () => sharedLogic();
+```
 
 ### Git / Version Control
 
