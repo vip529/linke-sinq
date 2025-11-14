@@ -39,6 +39,13 @@ LinkeSinq is a Learning Intelligence System that transforms scattered internet r
 - **Analytics:** PostHog
 - **Deployment:** Vercel
 
+## Documentation References
+
+For building components with Base UI, always refer to the official documentation:
+- **Base UI Documentation:** https://base-ui.com/llms.txt
+
+This documentation provides comprehensive guidance on Base UI components, patterns, and best practices.
+
 ## Development Commands
 
 ```bash
