@@ -241,3 +241,90 @@ export const TOOLTIP_ALIGN = {
 
 export type TooltipSide = (typeof TOOLTIP_SIDES)[keyof typeof TOOLTIP_SIDES];
 export type TooltipAlign = (typeof TOOLTIP_ALIGN)[keyof typeof TOOLTIP_ALIGN];
+
+// Alert Constants
+export const ALERT_VARIANTS = {
+  DEFAULT: 'default',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+  ERROR: 'error',
+  INFO: 'info',
+} as const;
+
+export type AlertVariant = (typeof ALERT_VARIANTS)[keyof typeof ALERT_VARIANTS];
+
+// Tag Constants
+export const TAG_VARIANTS = {
+  DEFAULT: 'default',
+  PRIMARY: 'primary',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+  ERROR: 'error',
+} as const;
+
+export const TAG_SIZES = {
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+} as const;
+
+export type TagVariant = (typeof TAG_VARIANTS)[keyof typeof TAG_VARIANTS];
+export type TagSize = (typeof TAG_SIZES)[keyof typeof TAG_SIZES];
+
+// Container Constants
+export const CONTAINER_MAX_WIDTHS = {
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+  XL: 'xl',
+  '2XL': '2xl',
+  FULL: 'full',
+} as const;
+
+export const CONTAINER_PADDING = {
+  NONE: 'none',
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+  XL: 'xl',
+} as const;
+
+export type ContainerMaxWidth = (typeof CONTAINER_MAX_WIDTHS)[keyof typeof CONTAINER_MAX_WIDTHS];
+export type ContainerPadding = (typeof CONTAINER_PADDING)[keyof typeof CONTAINER_PADDING];
+
+// Stack Constants
+export const STACK_DIRECTIONS = {
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+} as const;
+
+export const STACK_SPACING = {
+  NONE: 'none',
+  XS: 'xs',
+  SM: 'sm',
+  MD: 'md',
+  LG: 'lg',
+  XL: 'xl',
+  '2XL': '2xl',
+} as const;
+
+export const STACK_ALIGN = {
+  START: 'start',
+  CENTER: 'center',
+  END: 'end',
+  STRETCH: 'stretch',
+} as const;
+
+export const STACK_JUSTIFY = {
+  START: 'start',
+  CENTER: 'center',
+  END: 'end',
+  BETWEEN: 'between',
+  AROUND: 'around',
+  EVENLY: 'evenly',
+} as const;
+
+export type StackDirection = (typeof STACK_DIRECTIONS)[keyof typeof STACK_DIRECTIONS];
+export type StackSpacing = (typeof STACK_SPACING)[keyof typeof STACK_SPACING];
+export type StackAlign = (typeof STACK_ALIGN)[keyof typeof STACK_ALIGN];
+export type StackJustify = (typeof STACK_JUSTIFY)[keyof typeof STACK_JUSTIFY];
