@@ -11,7 +11,7 @@
 
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { designTokens } from '../src/configs/designTokens';
+import { designTokens } from '../src/lib/theme/designTokens';
 
 const generateThemeCSS = () => {
   const { colors } = designTokens;
@@ -20,7 +20,7 @@ const generateThemeCSS = () => {
     '/**',
     ' * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY',
     ' *',
-    ' * This file is generated from src/configs/designTokens.ts',
+    ' * This file is generated from src/lib/theme/designTokens.ts',
     ' * Run `pnpm run generate:theme` to regenerate',
     ' */',
     '',

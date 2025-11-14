@@ -39,6 +39,13 @@ LinkeSinq is a Learning Intelligence System that transforms scattered internet r
 - **Analytics:** PostHog
 - **Deployment:** Vercel
 
+## Documentation References
+
+For building components with Base UI, always refer to the official documentation:
+- **Base UI Documentation:** https://base-ui.com/llms.txt
+
+This documentation provides comprehensive guidance on Base UI components, patterns, and best practices.
+
 ## Development Commands
 
 ```bash
@@ -421,12 +428,18 @@ $ls-accent: #5e5bff;
 ### Naming Conventions
 
 **Files and Folders:**
-- React components: `PascalCase.tsx` (e.g., `UserProfile.tsx`, `LSButton.tsx`)
-- Utilities/helpers: `camelCase.ts` (e.g., `formatDate.ts`, `validateEmail.ts`)
-- Folders: `kebab-case` (e.g., `user-profile/`, `knowledge-capsules/`)
+- All files: `camelCase` (e.g., `userProfile.tsx`, `lsButton.tsx`, `formatDate.ts`)
+- Folders: `kebab-case` (e.g., `user-profile/`, `knowledge-capsules/`, `ls-button/`)
 - Route folders (App Router): `kebab-case` (e.g., `app/curated-picks/`)
-- Configuration files: `kebab-case.ts` (e.g., `database-config.ts`)
-- Styles: `globals.scss` for global styles (Sass), component styles use Tailwind
+- Configuration files: `camelCase.ts` (e.g., `databaseConfig.ts`, `tailwind.config.ts`)
+- Styles: `globals.css` for global styles, component styles use Tailwind
+
+**Code Quality Rules:**
+- NEVER include component usage examples or documentation comments in code files
+- NEVER create extra .md files unless explicitly requested
+- NEVER create barrel exports (index.ts) unless explicitly requested
+- ALWAYS run linting before committing to ensure no issues
+- Keep code clean and self-documenting with clear naming
 
 **Variables and Functions:**
 - Variables: `camelCase` (e.g., `userName`, `isLoading`)
