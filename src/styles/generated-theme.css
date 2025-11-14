@@ -1,0 +1,94 @@
+/**
+ * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
+ *
+ * This file is generated from src/configs/designTokens.ts
+ * Run `pnpm run generate:theme` to regenerate
+ */
+
+/* ==========================================
+ * DARK THEME (Default)
+ * ========================================== */
+:root {
+  /* Bg Colors */
+  --bg-primary: #0f111a;
+  --bg-secondary: #1a1d2b;
+  --bg-tertiary: #252836;
+  --bg-elevated: #2a2d3b;
+
+  /* Text Colors */
+  --text-primary: #e6e8f0;
+  --text-secondary: #a9b0c4;
+  --text-tertiary: #6b7280;
+  --text-inverse: #0f111a;
+
+  /* Accent Colors */
+  --accent-primary: #5e5bff;
+  --accent-hover: #4e4bef;
+  --accent-muted: #3e3bdf;
+  --accent-light: #7e7bff;
+
+  /* Border Colors */
+  --border-primary: #2a2d3b;
+  --border-secondary: #3a3d4b;
+  --border-focus: #5e5bff;
+
+  /* Status Colors */
+  --status-success: #10b981;
+  --status-success-muted: #065f46;
+  --status-warning: #f59e0b;
+  --status-warning-muted: #92400e;
+  --status-error: #ef4444;
+  --status-error-muted: #991b1b;
+  --status-info: #3b82f6;
+  --status-info-muted: #1e3a8a;
+
+  /* Shadow Colors */
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --glow-color: rgba(94, 91, 255, 0.3);
+
+  color-scheme: dark;
+}
+
+/* ==========================================
+ * LIGHT THEME
+ * ========================================== */
+[data-theme="light"] {
+  /* Bg Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-elevated: #ffffff;
+
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
+  --text-inverse: #ffffff;
+
+  /* Accent Colors */
+  --accent-primary: #5e5bff;
+  --accent-hover: #4e4bef;
+  --accent-muted: #7e7bff;
+  --accent-light: #9e9bff;
+
+  /* Border Colors */
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  --border-focus: #5e5bff;
+
+  /* Status Colors */
+  --status-success: #10b981;
+  --status-success-muted: #d1fae5;
+  --status-warning: #f59e0b;
+  --status-warning-muted: #fef3c7;
+  --status-error: #ef4444;
+  --status-error-muted: #fee2e2;
+  --status-info: #3b82f6;
+  --status-info-muted: #dbeafe;
+
+  /* Shadow Colors */
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --glow-color: rgba(94, 91, 255, 0.2);
+
+  color-scheme: light;
+}

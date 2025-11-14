@@ -63,8 +63,6 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 - [x] Create README.md with setup instructions
 - [x] Document environment variables needed
 - [x] Add development commands documentation
-- [ ] Create CONTRIBUTING.md if needed
-
 ---
 
 ## Phase 1: LS Component Library
