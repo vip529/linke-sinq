@@ -1,5 +1,6 @@
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -8,7 +9,7 @@
 /coverage
 
 # next.js
-/.next/
+.next/
 /out/
 
 # production
@@ -35,6 +36,10 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# monorepo packages
+packages/*/dist
+packages/*/.tsbuildinfo
 
 # biome
 .biome-cache/

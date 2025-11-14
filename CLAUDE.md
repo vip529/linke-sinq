@@ -83,24 +83,34 @@ pnpm check             # Run all checks (lint, type-check, test, circular)
 
 ## Architecture Principles
 
-### Feature-Based Folder Structure
+### Monorepo Structure
 
-The project follows a feature-based architecture rather than technical grouping:
+The project follows a monorepo architecture using pnpm workspaces:
 
 ```
-src/
-  components/
-    ls/              # LinkeSinq component library (reusable primitives)
-  app/               # Next.js 16 App Router pages
-  lib/
-    ai/              # AI layer (summaries, insights, embeddings)
-  utils/             # Utility functions
-  @types/            # TypeScript type definitions
-  hooks/             # Custom React hooks
-  constants/         # App constants
-  configs/           # Configuration files
-  modules/           # Feature modules
+/linkesinq
+  /apps
+    /web                    # Next.js 16 app
+      /src
+        /components
+          /ls               # LinkeSinq component library (reusable primitives)
+        /app                # Next.js 16 App Router pages
+        /lib
+          /ai               # AI layer (summaries, insights, embeddings)
+        /utils              # Utility functions
+        /@types             # TypeScript type definitions
+        /hooks              # Custom React hooks
+        /constants          # App constants
+        /configs            # Configuration files
+        /modules            # Feature modules
+  /packages                 # Future shared packages
+    /ui                     # Shared LS Design System (future)
+    /types                  # Shared TypeScript types (future)
+    /utils                  # Shared utilities (future)
+    /ai                     # AI pipelines + prompts (future)
 ```
+
+**Note:** Currently, all code lives in `apps/web`. Shared packages in `/packages` will be created as needed when functionality needs to be shared across multiple apps or extracted for better modularity.
 
 ### Import Path Alias
 
@@ -676,6 +686,7 @@ docs: update API documentation
 - Optional scope in parentheses: `feat(capsules):`, `fix(auth):`
 - For large commits linked to tasks, add task ID: `feat: add login feature #TASK-123`
 - Be specific but concise - the message should clearly describe what changed
+- **NEVER** include "Co-Authored-By: Claude" or "Generated with Claude Code" footers in commit messages
 
 **Good Examples:**
 ```
