@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/avif', 'image/webp'],
   },
+  turbopack: {},
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,

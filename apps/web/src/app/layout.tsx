@@ -29,7 +29,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      <body className={plusJakartaSans.className}>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

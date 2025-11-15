@@ -1,11 +1,18 @@
+import { FeaturesSection } from '~/components/landing/featuresSection';
+import { Footer } from '~/components/landing/footer';
+import { Header } from '~/components/landing/header';
+import { HeroSection } from '~/components/landing/heroSection';
+
 const HomePage = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="text-center">
-        <h1 className="text-5xl font-semibold text-ls-text mb-4">LinkeSinq</h1>
-        <p className="text-lg text-ls-text-muted">Learn intelligently.</p>
-      </div>
-    </main>
+    <>
+      <Header />
+      <main className="min-h-screen pt-16">
+        <HeroSection />
+        <FeaturesSection />
+        <Footer />
+      </main>
+    </>
   );
 };
 

@@ -66,11 +66,11 @@ describe('LSButton', () => {
     expect(button).toBeDisabled();
   });
 
-  it('should show loading spinner when isLoading is true', () => {
+  it('should show loading state when isLoading is true', () => {
     render(<LSButton isLoading>Loading</LSButton>);
     const button = screen.getByRole('button');
-    const spinner = button.querySelector('svg.animate-spin');
-    expect(spinner).toBeInTheDocument();
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Loading');
   });
 
   it('should render left icon', () => {

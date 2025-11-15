@@ -92,6 +92,7 @@ const config: Config = {
         xl: '0 20px 25px -5px var(--shadow-color)',
         '2xl': '0 25px 50px -12px var(--shadow-color)',
         glow: '0 0 20px var(--glow-color)',
+        'glow-sm': '0 0 10px var(--glow-color)',
         'glow-lg': '0 0 40px var(--glow-color)',
         none: 'none',
       },
