@@ -1,7 +1,7 @@
-import { FeaturesSection } from '~/components/landing/featuresSection';
-import { Footer } from '~/components/landing/footer';
-import { Header } from '~/components/landing/header';
-import { HeroSection } from '~/components/landing/heroSection';
+import { FeaturesSection } from '~/modules/landing/featuresSection';
+import { Footer } from '~/modules/landing/footer';
+import { Header } from '~/modules/landing/header';
+import { HeroSection } from '~/modules/landing/heroSection';
 
 const HomePage = () => {
   return (

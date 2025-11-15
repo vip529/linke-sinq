@@ -1,16 +1,21 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
-import type { WaitlistApiResponse } from '~/@types/waitlist';
+import type { WaitListApiResponse } from '~/@types/api/waitList';
+import {
+  DEFAULT_WAIT_LIST_SOURCE,
+  WAIT_LIST_FORM_MESSAGES,
+  WAIT_LIST_LOG_MESSAGES,
+} from '~/constants/api/waitLis';
 import { LSButton } from '~/lib/components/ls/lsButton';
 import { LSInput } from '~/lib/components/ls/lsInput';
 import { INPUT_STATES } from '~/lib/constants/lsComponentConstants';
 
-interface WaitlistFormProps {
+interface WaitListFormProps {
   source?: string;
 }
 
-export const WaitlistForm = ({ source = 'landing_page' }: WaitlistFormProps) => {
+export const WaitListForm = ({ source = DEFAULT_WAIT_LIST_SOURCE }: WaitListFormProps) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -21,7 +26,7 @@ export const WaitlistForm = ({ source = 'landing_page' }: WaitlistFormProps) => 
 
     if (!email.trim()) {
       setState('error');
-      setMessage('Please enter your email address');
+      setMessage(WAIT_LIST_FORM_MESSAGES.INPUT_REQUIRED);
       return;
     }
 
@@ -42,7 +47,7 @@ export const WaitlistForm = ({ source = 'landing_page' }: WaitlistFormProps) => 
         }),
       });
 
-      const data = (await response.json()) as WaitlistApiResponse;
+      const data = (await response.json()) as WaitListApiResponse;
 
       if (data.success) {
         setState('success');
@@ -54,8 +59,8 @@ export const WaitlistForm = ({ source = 'landing_page' }: WaitlistFormProps) => 
       }
     } catch (error) {
       setState('error');
-      setMessage('Something went wrong. Please try again.');
-      console.error('Waitlist submission error:', error);
+      setMessage(WAIT_LIST_FORM_MESSAGES.GENERIC_ERROR);
+      console.error(WAIT_LIST_LOG_MESSAGES.SUBMISSION_ERROR, error);
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +88,9 @@ export const WaitlistForm = ({ source = 'landing_page' }: WaitlistFormProps) => 
           disabled={state === 'success'}
           className="sm:w-auto w-full"
         >
-          {state === 'success' ? 'Joined!' : 'Join Waitlist'}
+          {state === 'success'
+            ? WAIT_LIST_FORM_MESSAGES.BUTTON_SUCCESS
+            : WAIT_LIST_FORM_MESSAGES.BUTTON_DEFAULT}
         </LSButton>
       </div>
 
