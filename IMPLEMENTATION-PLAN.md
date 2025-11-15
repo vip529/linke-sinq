@@ -5,6 +5,105 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 
 ---
 
+## Tech Stack Architecture
+
+### Frontend Layer
+
+**Framework & Runtime**
+- **Next.js 16** - App Router, React Server Components, Route Handlers
+- **React 19** - Latest features and performance improvements
+- **TypeScript** - Strict mode for type safety
+- **Vercel** - Deployment platform with edge functions
+
+**UI & Styling**
+- **TailwindCSS v4** - Utility-first CSS framework
+- **Sass** - Global styles and design tokens
+- **Base UI (@base-ui)** - Accessible low-level component primitives
+- **LS Components** - Custom component library built on Base UI
+
+**Forms & Validation**
+- **react-hook-form** - Performant form state management
+- **zod** - Runtime type validation and schema validation
+
+**AI Integration (Frontend)**
+- **Vercel AI SDK** - Streaming responses, tool calling, Server Actions integration
+
+### Backend & Infrastructure
+
+**Core Backend**
+- **Cloudflare Workers (Rust)** - Main API surface for search, ingestion, AI jobs
+- **Cloudflare Queues** - Background processing (link ingestion, capsule/course generation)
+- **Cloudflare KV** - Edge caching (popular capsules, trending, search results)
+- **Cloudflare Cron Triggers** - Scheduled jobs (curated picks, cleanup, re-indexing)
+
+**App-side Backend**
+- **Next.js Route Handlers** - Auth flows, light mutations, AI streaming
+- **Server Actions** - Form submissions, optimistic updates
+
+### Data & Storage
+
+**Primary Database**
+- **Supabase Postgres** - Single source of truth
+  - Row-Level Security (RLS)
+  - JSONB for flexible metadata
+  - Full-Text Search (tsvector + pg_trgm)
+  - pgvector for semantic search
+
+**Authentication**
+- **Supabase Auth** - Email/OAuth, JWT verification
+
+**Object Storage**
+- **Supabase Storage** - User avatars, small images
+- **Cloudflare R2** - Large exports, future media (PDF booklets, video/audio)
+
+### AI Layer (Provider Priority)
+
+1. **DeepSeek (PRIMARY)** - Core reasoning, capsule creation, course generation, metadata extraction
+2. **Claude Sonnet (SECONDARY)** - High-quality refinement, summaries, polished text
+3. **OpenAI GPT-4.x (FALLBACK)** - Code-heavy tasks, comparative baselines
+
+**Embeddings**
+- DeepSeek embeddings (primary), OpenAI embeddings (fallback)
+- Stored in pgvector
+
+**Search Strategy**
+- Hybrid: Keyword search (FTS) + Vector similarity (pgvector)
+- Combined scoring with filters (tags, topic, difficulty, recency)
+
+### Analytics & Observability
+
+- **PostHog** - Product analytics, event tracking, funnels, cohorts
+- **Cloudflare Dashboard** - Worker metrics, request logs
+- **Vercel Dashboard** - Next.js metrics, edge performance
+- **Supabase Dashboard** - Database health, slow queries
+
+### Development Tooling
+
+- **pnpm** - Package manager with workspace support
+- **Biome** - Linting and formatting
+- **Vitest** - Unit testing
+- **@testing-library/react** - Component testing
+- **workers-rs** - Rust SDK for Cloudflare Workers
+
+### Monorepo Structure
+
+```
+/linkesinq
+  /apps
+    /web                    # Next.js 16 app
+    /worker                 # Cloudflare Rust Worker
+    /extension              # Browser extension (future)
+  /packages
+    /database               # Shared schema, migrations, types
+    /types                  # Shared TypeScript types
+    /utils                  # Shared utilities
+    /ai                     # AI contracts and prompts
+  /scripts                  # Dev and deployment scripts
+  /supabase                 # Supabase config and migrations
+```
+
+---
+
 ## Phase 0: Project Setup & Infrastructure
 
 **Goal:** Initialize the project foundation, configure tools, and set up all external services.

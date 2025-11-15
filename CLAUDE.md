@@ -25,19 +25,42 @@ LinkeSinq is a Learning Intelligence System that transforms scattered internet r
 
 ## Core Tech Stack
 
-- **Framework:** Next.js 16 (App Router)
+### Frontend
+- **Framework:** Next.js 16 (App Router, React Server Components, Route Handlers)
 - **Language:** TypeScript (strict mode)
+- **UI:** React 19
 - **Styling:** TailwindCSS v4 + Sass
-- **UI Components:** Base UI + custom LS components
+- **UI Components:** Base UI (@base-ui) + custom LS components
+- **Forms:** react-hook-form + zod
 - **Testing:** Vitest + Testing Library
-- **Linting/Formatting:** Biome (replaces ESLint + Prettier)
+- **Linting/Formatting:** Biome
 - **Package Manager:** pnpm
-- **Database:** Supabase (Auth + Postgres + Edge Functions) / Neon
-- **Vector Search:** pgvector for embeddings
-- **AI Layer:** OpenAI GPT-4o + Vercel AI SDK
-- **Storage:** Cloudflare R2 / Supabase Storage
-- **Analytics:** PostHog
-- **Deployment:** Vercel
+- **Deployment:** Vercel (edge functions, CDN)
+
+### Backend & Infrastructure
+- **Core API:** Cloudflare Workers (Rust) - search, ingestion, AI jobs
+- **Background Jobs:** Cloudflare Queues (link ingestion, capsule/course generation)
+- **Edge Caching:** Cloudflare KV (popular capsules, trending, search results)
+- **Scheduled Jobs:** Cloudflare Cron Triggers (curated picks, cleanup, re-indexing)
+- **App Backend:** Next.js Route Handlers + Server Actions
+
+### Data & Storage
+- **Database:** Supabase Postgres (RLS, JSONB, FTS, pgvector)
+- **Auth:** Supabase Auth (email/OAuth, JWT)
+- **Storage:** Supabase Storage (avatars, images) + Cloudflare R2 (large files)
+- **Vector Search:** pgvector for semantic search
+
+### AI Layer (Priority Order)
+1. **DeepSeek (PRIMARY)** - Core reasoning, capsule creation, course generation, metadata extraction
+2. **Claude Sonnet (SECONDARY)** - High-quality refinement, summaries, polished text
+3. **OpenAI GPT-4.x (FALLBACK)** - Code-heavy tasks, comparative baselines
+- **AI SDK:** Vercel AI SDK (streaming, tool calling)
+- **Embeddings:** DeepSeek embeddings (primary), OpenAI (fallback), stored in pgvector
+- **Search:** Hybrid (FTS + vector similarity)
+
+### Analytics & Observability
+- **Analytics:** PostHog (events, funnels, cohorts, feature flags)
+- **Monitoring:** Cloudflare Dashboard, Vercel Dashboard, Supabase Dashboard
 
 ## Documentation References
 
@@ -90,27 +113,47 @@ The project follows a monorepo architecture using pnpm workspaces:
 ```
 /linkesinq
   /apps
-    /web                    # Next.js 16 app
+    /web                    # Next.js 16 app (marketing + app UI)
       /src
         /components
           /ls               # LinkeSinq component library (reusable primitives)
         /app                # Next.js 16 App Router pages
         /lib
-          /ai               # AI layer (summaries, insights, embeddings)
+          /ai               # AI integration (Vercel AI SDK)
+          /supabase         # Supabase client
         /utils              # Utility functions
         /@types             # TypeScript type definitions
         /hooks              # Custom React hooks
         /constants          # App constants
         /configs            # Configuration files
         /modules            # Feature modules
-  /packages                 # Future shared packages
-    /ui                     # Shared LS Design System (future)
-    /types                  # Shared TypeScript types (future)
-    /utils                  # Shared utilities (future)
-    /ai                     # AI pipelines + prompts (future)
+
+    /worker                 # Cloudflare Rust Worker
+      /src
+        /api                # API endpoints
+        /jobs               # Queue consumers
+        /ai                 # AI integration (direct HTTP)
+        /db                 # Database access layer
+        /utils              # Shared utilities
+
+    /extension              # Browser extension (future)
+      /src
+        /popup              # Extension popup UI
+        /content            # Content scripts
+        /background         # Background workers
+
+  /packages                 # Shared packages
+    /database               # Shared database schema, migrations, types
+    /types                  # Shared TypeScript types
+    /utils                  # Shared utilities
+    /ai                     # AI contracts and prompts
+    /ui                     # Shared LS Design System (future extraction)
+
+  /scripts                  # Development and deployment scripts
+  /supabase                 # Supabase configuration and migrations
 ```
 
-**Note:** Currently, all code lives in `apps/web`. Shared packages in `/packages` will be created as needed when functionality needs to be shared across multiple apps or extracted for better modularity.
+**Current State:** Code primarily in `apps/web`. `apps/worker` and shared packages will be created as needed during Phase 3+.
 
 ### Import Path Alias
 
@@ -255,16 +298,62 @@ Step-by-step learning through building:
 
 ## AI Layer Architecture
 
+### Provider Strategy (Priority Order)
+
+**1. DeepSeek (PRIMARY)**
+- Core reasoning and generation tasks
+- Capsule creation and metadata extraction
+- Micro-course generation
+- Capsule chaining and relationship mapping
+- Query rewriting and expansion
+- Cost-effective for high-volume operations
+
+**2. Claude Sonnet (SECONDARY)**
+- High-quality refinement tasks
+- Polished summaries and explanations
+- Course text refinement
+- "Make this clearer/better" operations
+- Premium tier for quality-critical tasks
+
+**3. OpenAI GPT-4.x (FALLBACK)**
+- Code-heavy tasks
+- Comparative baselines
+- Special cases and legacy support
+
+### AI Integration Points
+
+**Frontend (Next.js)**
+- Vercel AI SDK for streaming responses
+- Real-time AI interactions in UI
+- Capsule preview and creation
+- Course/lesson planning
+- Interactive explanations
+
+**Backend (Rust Worker)**
+- Direct HTTP calls to AI providers
+- Queue-driven batch processing
+- Background content generation
+- Periodic auto-curation
+- Embeddings generation
+
+### AI-Powered Features
+
 Located in `/lib/ai/`, the AI layer powers:
-- Content summaries
-- Key insight extraction
-- Recall prompt generation
+- Content summaries (2-3 sentences)
+- Key insight extraction (3-5 insights)
+- Recall prompt generation (2-3 questions)
 - Learning path recommendations
-- Capsule relationship mapping
+- Capsule relationship mapping (semantic similarity)
 - Explanation simplification
 - Follow-up resource generation
+- Metadata extraction (tags, difficulty, topics)
 
-Use OpenAI GPT-4o via Vercel AI SDK for all AI operations.
+### Embeddings & Semantic Search
+
+- **Model:** DeepSeek embeddings (primary), OpenAI embeddings (fallback)
+- **Storage:** pgvector in Supabase Postgres
+- **Strategy:** Hybrid search combining keyword (FTS) + vector similarity
+- **Scoring:** Combined with filters (tags, topic, difficulty, recency)
 
 ## Database Schema Considerations
 
@@ -521,17 +610,30 @@ const result = await supabase.from('capsules').select('*'); // No filtering
 const data = result.data[0]; // Unsafe array access
 ```
 
-### AI / OpenAI Integration
+### AI Integration
+
+**Provider Priority:**
+- Use DeepSeek for core generation tasks (10x cheaper than GPT-4)
+- Use Claude Sonnet for quality-critical refinement
+- Use OpenAI GPT-4.x as fallback or for code-heavy tasks
 
 **API Usage:**
 - Always use environment variables for API keys
 - Implement rate limiting and retry logic
 - Stream responses for better UX when possible
-- Use Vercel AI SDK for streaming
+- Use Vercel AI SDK for streaming (frontend)
+- Direct HTTP calls from Rust Worker (backend)
 - Set appropriate token limits and timeouts
-- Cache AI responses when appropriate
+- Cache AI responses when appropriate (Cloudflare KV)
 - Implement fallbacks for API failures
 - Log AI calls for debugging and cost tracking
+
+**Cost Optimization:**
+- Primary use of DeepSeek for bulk operations
+- Claude for premium experiences only
+- Cache responses to reduce duplicate calls
+- Batch processing for efficiency
+- Early termination with streaming
 
 ### Error Handling
 
