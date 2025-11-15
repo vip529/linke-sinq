@@ -13,25 +13,37 @@ CREATE TABLE IF NOT EXISTS public.waitlist (
 );
 
 -- Create index on email for faster lookups
-CREATE INDEX idx_waitlist_email ON public.waitlist(email);
+CREATE INDEX IF NOT EXISTS idx_waitlist_email ON public.waitlist(email);
 
 -- Create index on created_at for analytics
-CREATE INDEX idx_waitlist_created_at ON public.waitlist(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_waitlist_created_at ON public.waitlist(created_at DESC);
 
 -- Enable Row Level Security
 ALTER TABLE public.waitlist ENABLE ROW LEVEL SECURITY;
 
 -- Create policy to allow inserts from anyone (for waitlist signup)
-CREATE POLICY "Anyone can join waitlist"
-  ON public.waitlist
-  FOR INSERT
-  WITH CHECK (true);
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE tablename = 'waitlist' AND policyname = 'Anyone can join waitlist'
+  ) THEN
+    CREATE POLICY "Anyone can join waitlist"
+      ON public.waitlist
+      FOR INSERT
+      WITH CHECK (true);
+  END IF;
+END $$;
 
 -- Create policy to prevent reads (only backend can read)
-CREATE POLICY "Only service role can read waitlist"
-  ON public.waitlist
-  FOR SELECT
-  USING (false);
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies WHERE tablename = 'waitlist' AND policyname = 'Only service role can read waitlist'
+  ) THEN
+    CREATE POLICY "Only service role can read waitlist"
+      ON public.waitlist
+      FOR SELECT
+      USING (false);
+  END IF;
+END $$;
 
 -- Add trigger to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -42,6 +54,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_waitlist_updated_at ON public.waitlist;
 CREATE TRIGGER update_waitlist_updated_at
   BEFORE UPDATE ON public.waitlist
   FOR EACH ROW
