@@ -1,4 +1,4 @@
-import { WaitlistForm } from './waitlistForm';
+import { WaitListForm } from '../wait-list/waitListForm';
 
 export const HeroSection = () => {
   return (
@@ -21,7 +21,7 @@ export const HeroSection = () => {
         </p>
 
         <div className="animate-fade-in-up animation-delay-300">
-          <WaitlistForm />
+          <WaitListForm />
         </div>
 
         <p className="mt-6 text-sm text-text-tertiary animate-fade-in animation-delay-400">

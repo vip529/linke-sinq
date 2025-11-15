@@ -52,7 +52,6 @@ coverage/
 graph.svg
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -61,3 +60,6 @@ graph.svg
 # OS
 .DS_Store
 Thumbs.db
+
+#supabase
+*.temp

@@ -5,6 +5,105 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 
 ---
 
+## Tech Stack Architecture
+
+### Frontend Layer
+
+**Framework & Runtime**
+- **Next.js 16** - App Router, React Server Components, Route Handlers
+- **React 19** - Latest features and performance improvements
+- **TypeScript** - Strict mode for type safety
+- **Vercel** - Deployment platform with edge functions
+
+**UI & Styling**
+- **TailwindCSS v4** - Utility-first CSS framework
+- **Sass** - Global styles and design tokens
+- **Base UI (@base-ui)** - Accessible low-level component primitives
+- **LS Components** - Custom component library built on Base UI
+
+**Forms & Validation**
+- **react-hook-form** - Performant form state management
+- **zod** - Runtime type validation and schema validation
+
+**AI Integration (Frontend)**
+- **Vercel AI SDK** - Streaming responses, tool calling, Server Actions integration
+
+### Backend & Infrastructure
+
+**Core Backend**
+- **Cloudflare Workers (Rust)** - Main API surface for search, ingestion, AI jobs
+- **Cloudflare Queues** - Background processing (link ingestion, capsule/course generation)
+- **Cloudflare KV** - Edge caching (popular capsules, trending, search results)
+- **Cloudflare Cron Triggers** - Scheduled jobs (curated picks, cleanup, re-indexing)
+
+**App-side Backend**
+- **Next.js Route Handlers** - Auth flows, light mutations, AI streaming
+- **Server Actions** - Form submissions, optimistic updates
+
+### Data & Storage
+
+**Primary Database**
+- **Supabase Postgres** - Single source of truth
+  - Row-Level Security (RLS)
+  - JSONB for flexible metadata
+  - Full-Text Search (tsvector + pg_trgm)
+  - pgvector for semantic search
+
+**Authentication**
+- **Supabase Auth** - Email/OAuth, JWT verification
+
+**Object Storage**
+- **Supabase Storage** - User avatars, small images
+- **Cloudflare R2** - Large exports, future media (PDF booklets, video/audio)
+
+### AI Layer (Provider Priority)
+
+1. **DeepSeek (PRIMARY)** - Core reasoning, capsule creation, course generation, metadata extraction
+2. **Claude Sonnet (SECONDARY)** - High-quality refinement, summaries, polished text
+3. **OpenAI GPT-4.x (FALLBACK)** - Code-heavy tasks, comparative baselines
+
+**Embeddings**
+- DeepSeek embeddings (primary), OpenAI embeddings (fallback)
+- Stored in pgvector
+
+**Search Strategy**
+- Hybrid: Keyword search (FTS) + Vector similarity (pgvector)
+- Combined scoring with filters (tags, topic, difficulty, recency)
+
+### Analytics & Observability
+
+- **PostHog** - Product analytics, event tracking, funnels, cohorts
+- **Cloudflare Dashboard** - Worker metrics, request logs
+- **Vercel Dashboard** - Next.js metrics, edge performance
+- **Supabase Dashboard** - Database health, slow queries
+
+### Development Tooling
+
+- **pnpm** - Package manager with workspace support
+- **Biome** - Linting and formatting
+- **Vitest** - Unit testing
+- **@testing-library/react** - Component testing
+- **workers-rs** - Rust SDK for Cloudflare Workers
+
+### Monorepo Structure
+
+```
+/linkesinq
+  /apps
+    /web                    # Next.js 16 app
+    /worker                 # Cloudflare Rust Worker
+    /extension              # Browser extension (future)
+  /packages
+    /database               # Shared schema, migrations, types
+    /types                  # Shared TypeScript types
+    /utils                  # Shared utilities
+    /ai                     # AI contracts and prompts
+  /scripts                  # Dev and deployment scripts
+  /supabase                 # Supabase config and migrations
+```
+
+---
+
 ## Phase 0: Project Setup & Infrastructure
 
 **Goal:** Initialize the project foundation, configure tools, and set up all external services.
@@ -42,19 +141,21 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 - [x] Create `/src/lib/theme/` for theming system
 
 #### External Services Setup
-- [ ] Create Vercel account and link project
-- [ ] Set up Supabase project
-- [ ] Configure Supabase authentication
-- [ ] Set up Supabase database (Postgres)
-- [ ] Install pgvector extension in Supabase
+- [x] Create Vercel account and link project
+- [x] Set up Supabase project
+- [x] Configure Supabase authentication
+- [x] Set up Supabase database (Postgres)
+- [x] Install pgvector extension in Supabase
 - [ ] Create Cloudflare R2 bucket for storage
-- [ ] Set up PostHog account for analytics
+- [x] Set up PostHog account for analytics
+- [ ] Get DeepSeek API key
+- [ ] Get Claude API key (Anthropic)
 - [ ] Get OpenAI API key
 - [x] Configure environment variables template (.env.example)
 
 #### Development Tools
 - [ ] Install Vercel AI SDK
-- [ ] Install Supabase client libraries
+- [x] Install Supabase client libraries
 - [ ] Install Base UI components
 - [x] Create utility functions (cn for classnames)
 - [x] Set up development server configuration
@@ -170,35 +271,40 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 
 **Goal:** Launch a simple, beautiful landing page to collect emails and validate interest.
 
+**Status:** 🚧 In Progress (~85% Complete)
+
+**Note:** Landing page built, but form submission not working. Need to debug Server Action and form handling.
+
 ### Checklist:
 
 #### Landing Page Design
-- [ ] Design hero section with tagline
-- [ ] Design features section (3-4 key features)
-- [ ] Design waitlist CTA section
-- [ ] Design footer with social links
-- [ ] Mobile responsive design
+- [x] Design hero section with tagline
+- [x] Design features section (3-4 key features)
+- [x] Design waitlist CTA section
+- [x] Design footer with social links
+- [x] Mobile responsive design
 - [ ] Add animations and micro-interactions
 
 #### Landing Page Implementation
-- [ ] Create `/app/page.tsx` (home page)
-- [ ] Implement hero section with gradient background
-- [ ] Add animated hero headline
-- [ ] Implement features showcase grid
-- [ ] Add waitlist email form
-- [ ] Style with Tailwind using design tokens
+- [x] Create `/app/page.tsx` (home page)
+- [x] Implement hero section with gradient background
+- [x] Add animated hero headline
+- [x] Implement features showcase grid
+- [x] Add waitlist email form
+- [x] Style with Tailwind using design tokens
 - [ ] Add smooth scroll animations
 - [ ] Implement parallax or scroll effects
 
 #### Waitlist Functionality
-- [ ] Create `waitlist` table in Supabase
-- [ ] Schema: email, created_at, referral_source
-- [ ] Implement Server Action for email submission
-- [ ] Add email validation
-- [ ] Prevent duplicate emails
+- [x] Create `waitlist` table in Supabase
+- [x] Schema: email, created_at, referral_source
+- [x] Implement Server Action for email submission
+- [ ] **FIX: Form submission not working** ⚠️
+- [x] Add email validation
+- [x] Prevent duplicate emails
 - [ ] Add rate limiting
-- [ ] Create success/error toast feedback
-- [ ] Add loading state to form submission
+- [x] Create success/error toast feedback
+- [x] Add loading state to form submission
 
 #### SEO & Metadata
 - [ ] Configure Next.js metadata (title, description)
@@ -210,9 +316,9 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 - [ ] Implement JSON-LD structured data
 
 #### Analytics & Tracking
-- [ ] Integrate PostHog
-- [ ] Track page views
-- [ ] Track waitlist signups
+- [x] Integrate PostHog
+- [x] Track page views
+- [ ] Track waitlist signups (pending form fix)
 - [ ] Track button clicks and interactions
 - [ ] Set up conversion funnels
 
@@ -221,7 +327,7 @@ Complete phased roadmap for building the LinkeSinq learning intelligence platfor
 - [ ] Test on different browsers
 - [ ] Check page load performance (Lighthouse)
 - [ ] Optimize images and assets
-- [ ] Deploy to Vercel production
+- [x] Deploy to Vercel production
 - [ ] Set up custom domain
 - [ ] Test production deployment
 - [ ] Share on social media
