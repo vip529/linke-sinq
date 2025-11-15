@@ -1,25 +1,23 @@
 import { resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
     react(),
-    svgr({
-      svgrOptions: {
-        exportType: 'default',
-        ref: true,
-        svgo: false,
-        titleProp: true,
+    {
+      name: 'svg-mock',
+      transform(_code, id) {
+        if (id.endsWith('.svg')) {
+          return 'export default () => null';
+        }
       },
-      include: '**/*.svg',
-    }),
+    },
   ],
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./vitest.setup.ts'],
+    setupFiles: ['./vitest.setup.tsx'],
     css: true,
     coverage: {
       provider: 'v8',
