@@ -32,5 +32,4 @@ export const WAIT_LIST_FORM_MESSAGES = {
   BUTTON_DEFAULT: 'Join WaitList',
 } as const;
 
-export type WaitListErrorCode =
-  (typeof WAIT_LIST_ERROR_CODES)[keyof typeof WAIT_LIST_ERROR_CODES];
+export type WaitListErrorCode = (typeof WAIT_LIST_ERROR_CODES)[keyof typeof WAIT_LIST_ERROR_CODES];

@@ -2,7 +2,6 @@ import type { PostgrestError } from '@supabase/supabase-js';
 import type { NextRequest } from 'next/server';
 import type {
   WaitListEntry,
-  WaitListErrorCode,
   WaitListInsertPayload,
   WaitListRecord,
   WaitListSubmission,
@@ -13,6 +12,7 @@ import {
   WAIT_LIST_ERROR_CODES,
   WAIT_LIST_MESSAGES,
   WAIT_LIST_TABLE,
+  type WaitListErrorCode,
 } from '~/constants/api/waitLis';
 import { createSupabaseServerClient } from '~/lib/supabase/server';
 import { isValidEmail, normalizeEmail, sanitizeEmail } from '~/utils/validation';
@@ -126,9 +126,7 @@ export const persistWaitListEntry = async (
   return data;
 };
 
-export const formatWaitListResponseData = (
-  record: WaitListRecord
-): WaitListEntry => ({
+export const formatWaitListResponseData = (record: WaitListRecord): WaitListEntry => ({
   id: record.id,
   email: record.email,
   source: record.source,

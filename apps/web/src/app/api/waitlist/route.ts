@@ -1,5 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import type { WaitListApiResponse, WaitListRecord, WaitListSubmission } from '~/@types/api/waitList';
+import type {
+  WaitListApiResponse,
+  WaitListRecord,
+  WaitListSubmission,
+} from '~/@types/api/waitList';
 import {
   buildWaitListInsertPayload,
   formatWaitListResponseData,

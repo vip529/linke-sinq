@@ -1,4 +1,4 @@
-import type { WaitListErrorCode } from "~/constants/api/waitLis";
+import type { WaitListErrorCode } from '~/constants/api/waitLis';
 
 export interface WaitListEntry {
   id: string;
