@@ -4,7 +4,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      jsxRuntime: 'automatic',
+    }),
     {
       name: 'svg-mock',
       transform(_code, id) {
@@ -19,6 +21,11 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.tsx'],
     css: true,
+    environmentOptions: {
+      jsdom: {
+        resources: 'usable',
+      },
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
